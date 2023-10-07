@@ -51,18 +51,18 @@ fill_page_table768:
         mov edi, page_directory
 
 fill_page_directory:
-        mov eax, 0x00000002;
+        mov eax, 0x00000000;
         mov [edi+4*ecx], eax
         inc ecx
         cmp ecx, 1024
         jne fill_page_directory
 
         mov eax, page_table
-        or eax, 83
+        or eax, 0x3
         mov [page_directory], eax
 
         mov eax, page_table+4*768
-        or eax, 83
+        or eax, 0x3
         mov [page_directory+4*768], eax
 
         ; Load the page directory base address
