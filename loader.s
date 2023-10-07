@@ -12,9 +12,9 @@ section .multiboot.data          ;according to multiboot spec
         dd CHECKSUM  ;set checksum
 
 align 4096
-page_directory: resb 1024
+page_directory: resb 4096
 align 4096
-page_table:  resb 1024         ; no need to allocate all 2*1024 bytes
+page_table:  resb 4096*2         ; no need to allocate all 2*1024 bytes
 
 global start
 
@@ -31,38 +31,37 @@ fill_page_table:
         or eax, 3
         mov [edi+4*ecx], eax
         inc ecx
-        cmp ecx, 1024
+        cmp ecx, 1023
         jne fill_page_table
 
         xor ecx, ecx ; ecx=0
-        mov ecx, 767 * 1024
-        mov edi, 0x0010000;
+        mov edi, 0x00000000     ; map first 4 MB
 fill_page_table768:
         xor eax, eax
         mov eax, edi ;
         or eax, 3
-        mov [page_table+4*ecx], eax
+        mov [page_table+4*ecx+4096], eax
         add edi, 4096
         inc ecx
-        cmp ecx, 768* 1024
+        cmp ecx, 1023
         jne fill_page_table768
 
         xor ecx, ecx ; ecx=0
         mov edi, page_directory
 
 fill_page_directory:
-        mov eax, 0x00000002;
+        mov eax, 0x00000000;
         mov [edi+4*ecx], eax
         inc ecx
-        cmp ecx, 1024
+        cmp ecx, 1023
         jne fill_page_directory
 
         mov eax, page_table
-        or eax, 83
+        or eax, 0x3
         mov [page_directory], eax
 
-        mov eax, page_table+4*768
-        or eax, 83
+        mov eax, page_table+4096
+        or eax, 0x3
         mov [page_directory+4*768], eax
 
         ; Load the page directory base address
