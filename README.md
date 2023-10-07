@@ -1,4 +1,4 @@
-# paging_demo
+# Paging Demo
 
 This is small exercise meant to demonstrate setting up paging for x86 system.
 
