@@ -35,12 +35,12 @@ fill_page_table:
         jne fill_page_table
 
         xor ecx, ecx ; ecx=0
-        mov edi, 0x00100000;
+        mov edi, 0x00000000     ; map first 4 MB
 fill_page_table768:
         xor eax, eax
         mov eax, edi ;
         or eax, 3
-        mov [page_table+4*ecx+ 4096], eax
+        mov [page_table+4*ecx+4096], eax
         add edi, 4096
         inc ecx
         cmp ecx, 1023
